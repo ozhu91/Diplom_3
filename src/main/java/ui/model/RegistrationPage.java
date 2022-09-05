@@ -1,7 +1,7 @@
 package ui.model;
 
-import com.codeborne.selenide.Condition;
 import com.codeborne.selenide.SelenideElement;
+import io.qameta.allure.Step;
 
 import static com.codeborne.selenide.Selectors.*;
 import static com.codeborne.selenide.Selenide.$;
@@ -10,7 +10,6 @@ import static com.codeborne.selenide.Selenide.$$;
 public class RegistrationPage {
 
     private SelenideElement buttonRegistration = $(byText("Зарегистрироваться"));
-
 
     private SelenideElement inputSectionName = $$(byXpath("//fieldset")).get(0);
 
@@ -26,21 +25,28 @@ public class RegistrationPage {
 
     private SelenideElement linkLogin = $(byText("Войти"));
 
-    public SelenideElement getButtonRegistration() {
-        return buttonRegistration;
+    private SelenideElement textError = $(byClassName("input__error"));
+
+    @Step("Получение елемента ошибки форме регистрации")
+    public SelenideElement getTextError() {
+        return textError;
     }
 
+    @Step("Ввод Имени, пароля и email в форму регистрации")
     public void fillFormRegistration(String name, String email, String password) {
         this.inputName.setValue(name);
         this.inputEmail.setValue(email);
         this.inputPassword.setValue(password);
     }
 
-    public void waitForLoadLoginPage(){
-        $(byClassName("Auth_login__3hAey")).should(Condition.exist);
+    @Step("Клик по ссылке 'Войти' со страницы регистрации")
+    public void clickLinkFromRegistryPage() {
+        this.linkLogin.click();
     }
 
-    public SelenideElement getLinkLogin() {
-        return linkLogin;
+    @Step("Клик по кнопке 'Зарегистрироваться' со страницы регистрации")
+    public void clickButtonRegistrationRegistryPage() {
+        this.buttonRegistration.click();
     }
+
 }

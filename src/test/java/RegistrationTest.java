@@ -1,4 +1,3 @@
-import com.codeborne.selenide.Condition;
 import com.codeborne.selenide.Selenide;
 import io.qameta.allure.Description;
 import io.qameta.allure.Severity;
@@ -7,12 +6,15 @@ import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
+import ui.model.LoginPage;
 import ui.model.RegistrationPage;
 
-import static com.codeborne.selenide.Selectors.byClassName;
 import static com.codeborne.selenide.Selenide.*;
 
 public class RegistrationTest {
+    String name = "Oleg";
+    String email = "zhumazay911@email.ru";
+    String password = "123456";
 
     @Before
     public void beforeMethod() {
@@ -29,11 +31,10 @@ public class RegistrationTest {
     @Severity(SeverityLevel.CRITICAL)
     public void CheckRegistrationUser() {
         RegistrationPage registrationPage = open("https://stellarburgers.nomoreparties.site/register", RegistrationPage.class);
-        registrationPage.fillFormRegistration("Oleg", "zhum91@email.ru", "123456");
-        registrationPage.getButtonRegistration().click();
-        registrationPage.waitForLoadLoginPage();
-        $(byClassName("Auth_login__3hAey")).shouldBe(Condition.visible);
-        sleep(1000);
+        registrationPage.fillFormRegistration(name, email, password);
+        registrationPage.clickButtonRegistrationRegistryPage();
+        LoginPage loginPage = new LoginPage();
+        loginPage.waitingLoginPage();
         Assert.assertEquals("https://stellarburgers.nomoreparties.site/login", webdriver().object().getCurrentUrl());
     }
 
@@ -42,11 +43,9 @@ public class RegistrationTest {
     @Severity(SeverityLevel.NORMAL)
     public void CheckRegistrationUserUncorrect() {
         RegistrationPage registrationPage = open("https://stellarburgers.nomoreparties.site/register", RegistrationPage.class);
-        registrationPage.fillFormRegistration("Oleg", "zhum91@email.ru", "11");
-        registrationPage.getButtonRegistration().click();
-        $(byClassName("input__error")).should(Condition.exist);
-        $(byClassName("input__error")).shouldBe(Condition.visible);
-        $(byClassName("input__error")).text().equals("Некорректный пароль");
+        registrationPage.fillFormRegistration(name, email, "11");
+        registrationPage.clickButtonRegistrationRegistryPage();
+        registrationPage.getTextError().text().equals("Некорректный пароль");
         Assert.assertEquals("https://stellarburgers.nomoreparties.site/register", webdriver().object().getCurrentUrl());
     }
 }

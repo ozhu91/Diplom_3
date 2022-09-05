@@ -11,12 +11,13 @@ import ui.model.AccountPage;
 import ui.model.LoginPage;
 import ui.model.MainPage;
 
-import static com.codeborne.selenide.Selenide.sleep;
 import static com.codeborne.selenide.Selenide.webdriver;
 
 public class ConstructionLinkTest {
 
     String url = "https://stellarburgers.nomoreparties.site/";
+    String email = "zhumzhum@mail.ru";
+    String password = "123456";
 
     @Before
     public void beforeMethod() {
@@ -33,17 +34,17 @@ public class ConstructionLinkTest {
     @Severity(SeverityLevel.CRITICAL)
     public void CheckLinkAccountWithAuth() {
         LoginPage loginPage = Selenide.open(url + "login", LoginPage.class);;
-        loginPage.fillFormLogin("zhumzhum@mail.ru", "123456");
-        loginPage.getButtonLoginLP().click();
-        sleep(1500);
+        loginPage.fillFormLogin(email, password);
+        loginPage.clickButtonEnterFromLoginPage();
         MainPage mainPage = new MainPage();
-        mainPage.getLinkAccount().click();
-        sleep(1500);
+        mainPage.waitingMainPage();
+        mainPage.clickLinkAccountFromMainPage();
         AccountPage accountPage = new AccountPage();
-        accountPage.getLinkConstructor().click();
-        sleep(1500);
+        accountPage.waitingAccountPage();
+        accountPage.clickLinkConstructorFromAccountPage();
         MainPage mainPageWithAuth = new MainPage();
-        Assert.assertEquals(url, webdriver().object().getCurrentUrl());
+        mainPage.waitingMainPage();
         mainPageWithAuth.getTextBurgerConstructorText().shouldBe(Condition.visible);
+        Assert.assertEquals(url, webdriver().object().getCurrentUrl());
     }
 }
